@@ -1,47 +1,20 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
+from app.core.database import get_db
 from app.schemas.common import ApiResponse
-from app.schemas.user import LoginData, UserLoginRequest, UserPublic, UserRegisterRequest
-from app.services import mock_store
+from app.schemas.user import LoginData, UserPublic, UserLoginRequest, UserRegisterRequest
+from app.services.auth_service import login_user, register_user
 
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix='/auth', tags=['auth'])
 
 
-@router.post("/register", response_model=ApiResponse[UserPublic])
-def register(payload: UserRegisterRequest) -> ApiResponse[UserPublic]:
-    if any(user["username"] == payload.username for user in mock_store.users):
-        raise HTTPException(status_code=400, detail="用户名已存在")
-
-    user = {
-        "id": mock_store.next_id(mock_store.users),
-        "username": payload.username,
-        "password": payload.password,
-        "email": payload.email,
-        "points": 0,
-        "level": 1,
-    }
-    mock_store.users.append(user)
-    return ApiResponse(data=UserPublic(**user))
+@router.post('/register', response_model=ApiResponse[UserPublic])
+def register(payload: UserRegisterRequest, db: Session = Depends(get_db)) -> ApiResponse[UserPublic]:
+    return ApiResponse(data=register_user(db, payload))
 
 
-@router.post("/login", response_model=ApiResponse[LoginData])
-def login(payload: UserLoginRequest) -> ApiResponse[LoginData]:
-    user = next(
-        (
-            item
-            for item in mock_store.users
-            if item["username"] == payload.username and item["password"] == payload.password
-        ),
-        None,
-    )
-    if user is None:
-        raise HTTPException(status_code=401, detail="用户名或密码错误")
-
-    return ApiResponse(
-        data=LoginData(
-            access_token=f"mock-token-{user['id']}",
-            user=UserPublic(**user),
-        )
-    )
-
+@router.post('/login', response_model=ApiResponse[LoginData])
+def login(payload: UserLoginRequest, db: Session = Depends(get_db)) -> ApiResponse[LoginData]:
+    return ApiResponse(data=login_user(db, payload))
