@@ -1,20 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from app.api.questions import to_question_item
+from app.core.database import get_db
 from app.schemas.common import ApiResponse
-from app.schemas.question import QuestionListItem
-from app.services import mock_store
+from app.schemas.recommendation import RecommendationItem
+from app.services.recommendation_service import recommend_questions
 
 
-router = APIRouter(prefix="/recommendations", tags=["recommendations"])
+router = APIRouter(prefix='/recommendations', tags=['recommendations'])
 
 
-@router.get("/questions", response_model=ApiResponse[list[QuestionListItem]])
-def recommend_questions() -> ApiResponse[list[QuestionListItem]]:
-    items = sorted(
-        mock_store.questions,
-        key=lambda item: (item["like_count"], item["view_count"], item["created_at"]),
-        reverse=True,
-    )
-    return ApiResponse(data=[to_question_item(item) for item in items])
-
+@router.get('/questions', response_model=ApiResponse[list[RecommendationItem]])
+def get_recommendations(db: Session = Depends(get_db)) -> ApiResponse[list[RecommendationItem]]:
+    return ApiResponse(data=recommend_questions(db))

@@ -1,27 +1,20 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from app.api.questions import to_question_item
+from app.core.database import get_db
 from app.schemas.common import ApiResponse
-from app.schemas.question import QuestionListItem
-from app.schemas.user import UserPublic
-from app.services import mock_store
+from app.schemas.ranking import HotQuestionItem, UserRankingItem
+from app.services.ranking_service import list_hot_questions, list_user_rankings
 
 
-router = APIRouter(prefix="/rankings", tags=["rankings"])
+router = APIRouter(prefix='/rankings', tags=['rankings'])
 
 
-@router.get("/hot-questions", response_model=ApiResponse[list[QuestionListItem]])
-def hot_questions() -> ApiResponse[list[QuestionListItem]]:
-    items = sorted(
-        mock_store.questions,
-        key=lambda item: item["view_count"] + item["answer_count"] * 5 + item["like_count"] * 3,
-        reverse=True,
-    )
-    return ApiResponse(data=[to_question_item(item) for item in items])
+@router.get('/hot-questions', response_model=ApiResponse[list[HotQuestionItem]])
+def get_hot_questions(db: Session = Depends(get_db)) -> ApiResponse[list[HotQuestionItem]]:
+    return ApiResponse(data=list_hot_questions(db))
 
 
-@router.get("/users", response_model=ApiResponse[list[UserPublic]])
-def user_rankings() -> ApiResponse[list[UserPublic]]:
-    items = sorted(mock_store.users, key=lambda item: item["points"], reverse=True)
-    return ApiResponse(data=[UserPublic(**item) for item in items])
-
+@router.get('/users', response_model=ApiResponse[list[UserRankingItem]])
+def get_user_rankings(db: Session = Depends(get_db)) -> ApiResponse[list[UserRankingItem]]:
+    return ApiResponse(data=list_user_rankings(db))
