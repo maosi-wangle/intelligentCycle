@@ -1,1 +1,6 @@
 23级计科三班《软件开发综合实践》-第四组-选题报告.docx
+backend/app.db
+backend/.venv/
+__pycache__/
+*.pyc
+.env
