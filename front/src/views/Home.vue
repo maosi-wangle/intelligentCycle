@@ -106,7 +106,7 @@ const loadRecommendations = async () => {
       finished.value = true;
     } else {
       questions.value = [...questions.value, ...res];
-      page.value++;
+      finished.value = true;
     }
   } catch (error) {
     console.error("加载推荐失败:", error);

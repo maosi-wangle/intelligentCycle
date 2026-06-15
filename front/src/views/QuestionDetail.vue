@@ -136,9 +136,15 @@ const loadAnswers = async () => {
 
 const handleLike = async () => {
   try {
-    await questionStore.toggleLikeQuestion(route.params.id);
-    question.value.is_liked = !question.value.is_liked;
-    question.value.like_count += question.value.is_liked ? 1 : -1;
+    if (question.value.is_liked) {
+      await questionStore.toggleLikeQuestion(route.params.id);
+      question.value.is_liked = false;
+      question.value.like_count--;
+    } else {
+      await questionStore.toggleLikeQuestion(route.params.id);
+      question.value.is_liked = true;
+      question.value.like_count++;
+    }
   } catch (error) {
     console.error("点赞失败:", error);
     showToast("操作失败");
@@ -147,8 +153,13 @@ const handleLike = async () => {
 
 const handleCollect = async () => {
   try {
-    await questionStore.toggleCollectQuestion(route.params.id);
-    question.value.is_collected = !question.value.is_collected;
+    if (question.value.is_collected) {
+      await questionStore.toggleCollectQuestion(route.params.id);
+      question.value.is_collected = false;
+    } else {
+      await questionStore.toggleCollectQuestion(route.params.id);
+      question.value.is_collected = true;
+    }
   } catch (error) {
     console.error("收藏失败:", error);
     showToast("操作失败");
@@ -157,11 +168,17 @@ const handleCollect = async () => {
 
 const handleLikeAnswer = async answerId => {
   try {
-    await questionStore.toggleLikeAnswer(answerId);
     const answer = answers.value.find(a => a.id === answerId);
-    if (answer) {
-      answer.is_liked = !answer.is_liked;
-      answer.like_count += answer.is_liked ? 1 : -1;
+    if (!answer) return;
+
+    if (answer.is_liked) {
+      await questionStore.toggleLikeAnswer(answerId);
+      answer.is_liked = false;
+      answer.like_count--;
+    } else {
+      await questionStore.toggleLikeAnswer(answerId);
+      answer.is_liked = true;
+      answer.like_count++;
     }
   } catch (error) {
     console.error("回答点赞失败:", error);

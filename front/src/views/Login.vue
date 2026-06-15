@@ -9,11 +9,10 @@
       <van-field v-model="username" placeholder="用户名" required clearable />
       <van-field
         v-model="password"
-        type="password"
+        :type="showPassword ? 'text' : 'password'"
         placeholder="密码"
         required
         clearable
-        :show-password="showPassword"
         right-icon="eye"
         @click-right-icon="showPassword = !showPassword"
       />

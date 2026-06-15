@@ -19,7 +19,7 @@
         @click-right-icon="showPassword = !showPassword"
       />
       <van-field v-model="confirmPassword" type="password" placeholder="确认密码" required clearable />
-      <van-button type="primary" native-type="submit" block loading="loading">注册</van-button>
+      <van-button type="primary" native-type="submit" block :loading="loading">注册</van-button>
     </van-form>
 
     <div class="register-footer">
