@@ -21,11 +21,11 @@
               <div class="hot-content">
                 <h3 class="hot-title">{{ question.title }}</h3>
                 <div class="hot-stats">
-                  <van-icon name="eye-o" size="12" />
+                  <span class="icon">👁</span>
                   <span>{{ question.view_count }}</span>
-                  <van-icon name="message-o" size="12" />
+                  <span class="icon">💬</span>
                   <span>{{ question.answer_count }}</span>
-                  <van-icon name="like-o" size="12" />
+                  <span class="icon">👍</span>
                   <span>{{ question.like_count }}</span>
                 </div>
               </div>
@@ -90,10 +90,11 @@ const loadHotQuestions = async () => {
   loading.value = true;
   try {
     const res = await getHotQuestions();
-    if (res.length === 0) {
+    if (!res || res.length === 0) {
       finished.value = true;
     } else {
-      hotQuestions.value = [...hotQuestions.value, ...res];
+      hotQuestions.value = res;
+      finished.value = true;
     }
   } catch (error) {
     console.error("加载热榜失败:", error);
@@ -108,10 +109,11 @@ const loadUserRankings = async () => {
   loading.value = true;
   try {
     const res = await getUserRankings();
-    if (res.length === 0) {
+    if (!res || res.length === 0) {
       finished.value = true;
     } else {
-      userRankings.value = [...userRankings.value, ...res];
+      userRankings.value = res;
+      finished.value = true;
     }
   } catch (error) {
     console.error("加载排行榜失败:", error);

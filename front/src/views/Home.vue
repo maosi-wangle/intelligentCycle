@@ -24,11 +24,11 @@
                   <van-tag v-for="tag in question.tags" :key="tag" size="small">{{ tag }}</van-tag>
                 </span>
                 <div class="stats">
-                  <van-icon name="eye-o" size="14" />
+                  <span class="icon">👁</span>
                   <span>{{ question.view_count }}</span>
-                  <van-icon name="message-o" size="14" />
+                  <span class="icon">💬</span>
                   <span>{{ question.answer_count }}</span>
-                  <van-icon name="like-o" size="14" />
+                  <span class="icon">👍</span>
                   <span>{{ question.like_count }}</span>
                 </div>
               </div>
