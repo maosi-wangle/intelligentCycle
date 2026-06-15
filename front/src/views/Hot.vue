@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { getHotQuestions, getUserRankings } from "@/api/rankings";
 import { showToast } from "vant";
@@ -90,12 +90,13 @@ const loadHotQuestions = async () => {
   loading.value = true;
   try {
     const res = await getHotQuestions();
-    if (res.items.length === 0) {
+    if (res.length === 0) {
       finished.value = true;
     } else {
-      hotQuestions.value = [...hotQuestions.value, ...res.items];
+      hotQuestions.value = [...hotQuestions.value, ...res];
     }
-  } catch {
+  } catch (error) {
+    console.error("加载热榜失败:", error);
     showToast("加载失败");
   } finally {
     loading.value = false;
@@ -107,12 +108,13 @@ const loadUserRankings = async () => {
   loading.value = true;
   try {
     const res = await getUserRankings();
-    if (res.items.length === 0) {
+    if (res.length === 0) {
       finished.value = true;
     } else {
-      userRankings.value = [...userRankings.value, ...res.items];
+      userRankings.value = [...userRankings.value, ...res];
     }
-  } catch {
+  } catch (error) {
+    console.error("加载排行榜失败:", error);
     showToast("加载失败");
   } finally {
     loading.value = false;
@@ -129,6 +131,15 @@ const getRankClass = index => {
 const goToDetail = id => {
   router.push(`/question/${id}`);
 };
+
+watch(activeTab, () => {
+  finished.value = false;
+  if (activeTab.value === 0) {
+    loadHotQuestions();
+  } else {
+    loadUserRankings();
+  }
+});
 
 onMounted(() => {
   loadHotQuestions();

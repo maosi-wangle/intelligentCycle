@@ -16,6 +16,7 @@
                 v-for="source in msg.sources"
                 :key="source.id"
                 :title="source.title"
+                :value="source.snippet"
                 clickable
               />
             </van-cell-group>
@@ -87,7 +88,8 @@ const handleSend = async () => {
       content: res.answer,
       sources: res.sources
     });
-  } catch {
+  } catch (error) {
+    console.error("AI请求失败:", error);
     showToast("请求失败，请稍后重试");
     messages.value.push({
       type: "bot",

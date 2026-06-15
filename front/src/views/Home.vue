@@ -18,7 +18,6 @@
               @click="goToDetail(question.id)"
             >
               <h3 class="question-title">{{ question.title }}</h3>
-              <p class="question-content">{{ question.content }}</p>
               <div class="question-footer">
                 <span class="author">{{ question.author }}</span>
                 <span class="tags">
@@ -52,7 +51,6 @@
               @click="goToDetail(question.id)"
             >
               <h3 class="question-title">{{ question.title }}</h3>
-              <p class="question-content">{{ question.content }}</p>
               <div class="question-footer">
                 <span class="author">{{ question.author }}</span>
                 <span class="tags">
@@ -82,12 +80,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useQuestionStore } from "@/stores/question";
 import { getRecommendedQuestions } from "@/api/recommendations";
+import { showToast } from "vant";
+
 const router = useRouter();
 const questionStore = useQuestionStore();
+
 const keyword = ref("");
 const activeTab = ref(0);
 const active = ref(0);
@@ -95,23 +96,26 @@ const questions = ref([]);
 const loading = ref(false);
 const finished = ref(false);
 const page = ref(1);
+
 const loadRecommendations = async () => {
   if (loading.value) return;
   loading.value = true;
   try {
     const res = await getRecommendedQuestions();
-    if (res.items.length === 0) {
+    if (res.length === 0) {
       finished.value = true;
     } else {
-      questions.value = [...questions.value, ...res.items];
+      questions.value = [...questions.value, ...res];
       page.value++;
     }
-  } catch {
+  } catch (error) {
+    console.error("加载推荐失败:", error);
     showToast("加载失败");
   } finally {
     loading.value = false;
   }
 };
+
 const loadLatest = async () => {
   if (loading.value) return;
   loading.value = true;
@@ -126,20 +130,35 @@ const loadLatest = async () => {
       questions.value = [...questions.value, ...res.items];
       page.value++;
     }
-  } catch {
+  } catch (error) {
+    console.error("加载最新失败:", error);
     showToast("加载失败");
   } finally {
     loading.value = false;
   }
 };
+
 const handleSearch = () => {
   if (keyword.value.trim()) {
     router.push({ path: "/", query: { keyword: keyword.value } });
   }
 };
+
 const goToDetail = id => {
   router.push(`/question/${id}`);
 };
+
+watch(activeTab, () => {
+  questions.value = [];
+  page.value = 1;
+  finished.value = false;
+  if (activeTab.value === 0) {
+    loadRecommendations();
+  } else {
+    loadLatest();
+  }
+});
+
 onMounted(() => {
   loadRecommendations();
 });
@@ -167,19 +186,8 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
-
-.question-content {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   margin-bottom: 12px;
+  line-height: 1.4;
 }
 
 .question-footer {

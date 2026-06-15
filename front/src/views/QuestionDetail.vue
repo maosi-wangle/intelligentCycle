@@ -101,7 +101,6 @@ const question = ref(null);
 const answers = ref([]);
 const loading = ref(false);
 const finished = ref(false);
-const page = ref(1);
 const showAnswerInput = ref(false);
 const answerContent = ref("");
 
@@ -111,7 +110,8 @@ const loadQuestion = async () => {
   try {
     const res = await questionStore.loadQuestionDetail(route.params.id);
     question.value = res;
-  } catch {
+  } catch (error) {
+    console.error("加载问题失败:", error);
     showToast("加载失败");
   }
 };
@@ -120,17 +120,14 @@ const loadAnswers = async () => {
   if (loading.value) return;
   loading.value = true;
   try {
-    const res = await questionStore.loadAnswers(route.params.id, {
-      page: page.value,
-      page_size: 10
-    });
-    if (res.items.length === 0) {
+    const res = await questionStore.loadAnswers(route.params.id);
+    if (res.length === 0) {
       finished.value = true;
     } else {
-      answers.value = [...answers.value, ...res.items];
-      page.value++;
+      answers.value = [...answers.value, ...res];
     }
-  } catch {
+  } catch (error) {
+    console.error("加载回答失败:", error);
     showToast("加载失败");
   } finally {
     loading.value = false;
@@ -140,7 +137,10 @@ const loadAnswers = async () => {
 const handleLike = async () => {
   try {
     await questionStore.toggleLikeQuestion(route.params.id);
-  } catch {
+    question.value.is_liked = !question.value.is_liked;
+    question.value.like_count += question.value.is_liked ? 1 : -1;
+  } catch (error) {
+    console.error("点赞失败:", error);
     showToast("操作失败");
   }
 };
@@ -148,7 +148,9 @@ const handleLike = async () => {
 const handleCollect = async () => {
   try {
     await questionStore.toggleCollectQuestion(route.params.id);
-  } catch {
+    question.value.is_collected = !question.value.is_collected;
+  } catch (error) {
+    console.error("收藏失败:", error);
     showToast("操作失败");
   }
 };
@@ -156,7 +158,13 @@ const handleCollect = async () => {
 const handleLikeAnswer = async answerId => {
   try {
     await questionStore.toggleLikeAnswer(answerId);
-  } catch {
+    const answer = answers.value.find(a => a.id === answerId);
+    if (answer) {
+      answer.is_liked = !answer.is_liked;
+      answer.like_count += answer.is_liked ? 1 : -1;
+    }
+  } catch (error) {
+    console.error("回答点赞失败:", error);
     showToast("操作失败");
   }
 };
@@ -164,8 +172,13 @@ const handleLikeAnswer = async answerId => {
 const handleAcceptAnswer = async answerId => {
   try {
     await questionStore.confirmAcceptAnswer(answerId);
+    const answer = answers.value.find(a => a.id === answerId);
+    if (answer) {
+      answer.is_accepted = true;
+    }
     showToast("采纳成功");
-  } catch {
+  } catch (error) {
+    console.error("采纳失败:", error);
     showToast("操作失败");
   }
 };
@@ -190,10 +203,10 @@ const submitAnswer = async () => {
     answerContent.value = "";
     showAnswerInput.value = false;
     answers.value = [];
-    page.value = 1;
     finished.value = false;
     loadAnswers();
-  } catch {
+  } catch (error) {
+    console.error("发布回答失败:", error);
     showToast("发布失败");
   }
 };

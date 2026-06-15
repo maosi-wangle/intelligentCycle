@@ -17,12 +17,17 @@
         right-icon="eye"
         @click-right-icon="showPassword = !showPassword"
       />
-      <van-button type="primary" native-type="submit" block loading="loading">登录</van-button>
+      <van-button type="primary" native-type="submit" block :loading="loading">登录</van-button>
     </van-form>
 
     <div class="login-footer">
       <span>还没有账号？</span>
       <router-link to="/register">立即注册</router-link>
+    </div>
+
+    <div class="tips">
+      <p>测试账号：student01 / 123456</p>
+      <p>请确保后端服务已启动在 http://127.0.0.1:8000</p>
     </div>
   </div>
 </template>
@@ -42,8 +47,13 @@ const showPassword = ref(false);
 const loading = ref(false);
 
 const handleSubmit = async () => {
-  if (!username.value || !password.value) {
-    showToast("请填写用户名和密码");
+  if (!username.value.trim()) {
+    showToast("请输入用户名");
+    return;
+  }
+
+  if (!password.value.trim()) {
+    showToast("请输入密码");
     return;
   }
 
@@ -53,7 +63,7 @@ const handleSubmit = async () => {
     showToast("登录成功");
     router.push("/");
   } catch (error) {
-    showToast(error.response?.data?.message || "登录失败");
+    console.error("登录失败:", error);
   } finally {
     loading.value = false;
   }
@@ -100,5 +110,16 @@ const handleSubmit = async () => {
 .login-footer a {
   color: #fff;
   margin-left: 8px;
+}
+
+.tips {
+  margin-top: 40px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+}
+
+.tips p {
+  margin-bottom: 4px;
 }
 </style>
