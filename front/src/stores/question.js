@@ -24,8 +24,8 @@ export const useQuestionStore = defineStore('question', () => {
 
   const loadAnswers = async (questionId, params = {}) => {
     const res = await getAnswers(questionId, params)
-    answers.value = res.items
-    return res
+    answers.value = res
+    return { items: res, total: res.length }
   }
 
   const addQuestion = async (data) => {

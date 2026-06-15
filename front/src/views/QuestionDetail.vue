@@ -121,10 +121,10 @@ const loadAnswers = async () => {
   loading.value = true;
   try {
     const res = await questionStore.loadAnswers(route.params.id);
-    if (res.length === 0) {
+    if (res.items.length === 0) {
       finished.value = true;
     } else {
-      answers.value = [...answers.value, ...res];
+      answers.value = [...answers.value, ...res.items];
     }
   } catch (error) {
     console.error("加载回答失败:", error);
@@ -221,6 +221,7 @@ const submitAnswer = async () => {
     showAnswerInput.value = false;
     answers.value = [];
     finished.value = false;
+    loading.value = false;
     loadAnswers();
   } catch (error) {
     console.error("发布回答失败:", error);

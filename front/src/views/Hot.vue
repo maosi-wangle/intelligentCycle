@@ -133,7 +133,14 @@ const goToDetail = id => {
 };
 
 watch(activeTab, () => {
+  if (activeTab.value === 0) {
+    hotQuestions.value = [];
+  } else {
+    userRankings.value = [];
+  }
   finished.value = false;
+  loading.value = false;
+
   if (activeTab.value === 0) {
     loadHotQuestions();
   } else {
