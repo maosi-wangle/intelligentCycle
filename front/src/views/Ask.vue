@@ -24,7 +24,7 @@
           >{{ tag.name }}</van-tag>
         </div>
       </div>
-      <van-button type="primary" native-type="submit" block loading="loading">发布提问</van-button>
+      <van-button type="primary" native-type="submit" block :loading="loading">发布提问</van-button>
     </van-form>
   </div>
 </template>

@@ -38,38 +38,27 @@ export const useQuestionStore = defineStore('question', () => {
     return res
   }
 
-  const toggleLikeQuestion = async (questionId) => {
-    if (questionDetail.value?.is_liked) {
+  const toggleLikeQuestion = async (questionId, isLiked) => {
+    if (isLiked) {
       await unlikeQuestion(questionId)
-      questionDetail.value.is_liked = false
-      questionDetail.value.like_count--
     } else {
       await likeQuestion(questionId)
-      questionDetail.value.is_liked = true
-      questionDetail.value.like_count++
     }
   }
 
-  const toggleCollectQuestion = async (questionId) => {
-    if (questionDetail.value?.is_collected) {
+  const toggleCollectQuestion = async (questionId, isCollected) => {
+    if (isCollected) {
       await uncollectQuestion(questionId)
-      questionDetail.value.is_collected = false
     } else {
       await collectQuestion(questionId)
-      questionDetail.value.is_collected = true
     }
   }
 
-  const toggleLikeAnswer = async (answerId) => {
-    const answer = answers.value.find(a => a.id === answerId)
-    if (answer?.is_liked) {
+  const toggleLikeAnswer = async (answerId, isLiked) => {
+    if (isLiked) {
       await unlikeAnswer(answerId)
-      answer.is_liked = false
-      answer.like_count--
     } else {
       await likeAnswer(answerId)
-      answer.is_liked = true
-      answer.like_count++
     }
   }
 

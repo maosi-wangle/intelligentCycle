@@ -137,11 +137,11 @@ const loadAnswers = async () => {
 const handleLike = async () => {
   try {
     if (question.value.is_liked) {
-      await questionStore.toggleLikeQuestion(route.params.id);
+      await questionStore.toggleLikeQuestion(route.params.id, true);
       question.value.is_liked = false;
       question.value.like_count--;
     } else {
-      await questionStore.toggleLikeQuestion(route.params.id);
+      await questionStore.toggleLikeQuestion(route.params.id, false);
       question.value.is_liked = true;
       question.value.like_count++;
     }
@@ -154,10 +154,10 @@ const handleLike = async () => {
 const handleCollect = async () => {
   try {
     if (question.value.is_collected) {
-      await questionStore.toggleCollectQuestion(route.params.id);
+      await questionStore.toggleCollectQuestion(route.params.id, true);
       question.value.is_collected = false;
     } else {
-      await questionStore.toggleCollectQuestion(route.params.id);
+      await questionStore.toggleCollectQuestion(route.params.id, false);
       question.value.is_collected = true;
     }
   } catch (error) {
@@ -172,11 +172,11 @@ const handleLikeAnswer = async answerId => {
     if (!answer) return;
 
     if (answer.is_liked) {
-      await questionStore.toggleLikeAnswer(answerId);
+      await questionStore.toggleLikeAnswer(answerId, true);
       answer.is_liked = false;
       answer.like_count--;
     } else {
-      await questionStore.toggleLikeAnswer(answerId);
+      await questionStore.toggleLikeAnswer(answerId, false);
       answer.is_liked = true;
       answer.like_count++;
     }

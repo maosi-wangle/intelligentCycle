@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import Vant from 'vant'
+import { Icon } from 'vant'
 import 'vant/lib/index.css'
 
 import App from './App.vue'
@@ -19,5 +20,6 @@ setupRouterGuard(router)
 app.use(pinia)
 app.use(router)
 app.use(Vant)
+app.use(Icon)
 
 app.mount('#app')
