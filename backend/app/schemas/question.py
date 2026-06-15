@@ -23,9 +23,9 @@ class QuestionListItem(BaseModel):
 
 class QuestionDetail(QuestionListItem):
     is_collected: bool = False
+    collect_count: int = 0
 
 
 class QuestionListData(BaseModel):
     total: int
     items: list[QuestionListItem]
-

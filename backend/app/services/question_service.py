@@ -23,7 +23,7 @@ def _to_question_item(question: Question) -> QuestionListItem:
 
 def _to_question_detail(question: Question) -> QuestionDetail:
     item = _to_question_item(question)
-    return QuestionDetail(**item.model_dump(), is_collected=question.is_collected)
+    return QuestionDetail(**item.model_dump(), is_collected=question.is_collected, collect_count=question.collect_count)
 
 
 def list_questions(db: Session, keyword: str | None, tag_id: int | None, page: int, page_size: int) -> QuestionListData:

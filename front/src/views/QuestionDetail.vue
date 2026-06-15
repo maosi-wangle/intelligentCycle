@@ -22,12 +22,20 @@
       </div>
       <div class="question-actions">
         <van-button :type="question.is_liked ? 'primary' : 'default'" @click="handleLike">
-          <van-icon :name="question.is_liked ? 'like' : 'like-o'" />
+          <van-icon
+            :name="question.is_liked ? 'like' : 'like-o'"
+            :color="question.is_liked ? '#ee0a24' : '#969799'"
+          />
           {{ question.is_liked ? '已赞' : '点赞' }}
+          <span>({{ question.like_count }})</span>
         </van-button>
         <van-button :type="question.is_collected ? 'primary' : 'default'" @click="handleCollect">
-          <van-icon :name="question.is_collected ? 'star' : 'star-o'" />
+          <van-icon
+            :name="question.is_collected ? 'star' : 'star-o'"
+            :color="question.is_collected ? '#ff976a' : '#969799'"
+          />
           {{ question.is_collected ? '已收藏' : '收藏' }}
+          <span>({{ question.collect_count }})</span>
         </van-button>
         <van-button type="default" @click="goToAnswer">
           <van-icon name="edit" />写回答
@@ -156,9 +164,11 @@ const handleCollect = async () => {
     if (question.value.is_collected) {
       await questionStore.toggleCollectQuestion(route.params.id, true);
       question.value.is_collected = false;
+      question.value.collect_count--;
     } else {
       await questionStore.toggleCollectQuestion(route.params.id, false);
       question.value.is_collected = true;
+      question.value.collect_count++;
     }
   } catch (error) {
     console.error("收藏失败:", error);
