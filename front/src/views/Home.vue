@@ -59,8 +59,10 @@
                 <div class="stats">
                   <van-icon name="eye-o" size="14" />
                   <span>{{ question.view_count }}</span>
-                  <van-icon name="message-o" size="14" />
+                  <van-icon name="comment-o" size="14" />
                   <span>{{ question.answer_count }}</span>
+                  <van-icon name="like-o" size="14" />
+                  <span>{{ question.like_count }}</span>
                 </div>
               </div>
             </div>

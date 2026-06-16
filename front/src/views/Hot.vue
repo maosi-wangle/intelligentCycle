@@ -2,7 +2,7 @@
   <div class="hot-page">
     <van-nav-bar title="热榜" />
 
-    <van-tabs v-model="activeTab" sticky>
+    <van-tabs v-model="activeTab" sticky @change="handleTabChange">
       <van-tab title="热门问题">
         <div class="tab-content">
           <van-list
@@ -112,7 +112,10 @@ const loadUserRankings = async () => {
     if (!res || res.length === 0) {
       finished.value = true;
     } else {
-      userRankings.value = res;
+      userRankings.value = [];
+      res.forEach(item => {
+        userRankings.value.push(item);
+      });
       finished.value = true;
     }
   } catch (error) {
@@ -134,21 +137,18 @@ const goToDetail = id => {
   router.push(`/question/${id}`);
 };
 
-watch(activeTab, () => {
-  if (activeTab.value === 0) {
-    hotQuestions.value = [];
-  } else {
-    userRankings.value = [];
-  }
-  finished.value = false;
+const handleTabChange = index => {
   loading.value = false;
+  finished.value = false;
 
-  if (activeTab.value === 0) {
+  if (index === 0) {
+    hotQuestions.value = [];
     loadHotQuestions();
   } else {
+    userRankings.value = [];
     loadUserRankings();
   }
-});
+};
 
 onMounted(() => {
   loadHotQuestions();
