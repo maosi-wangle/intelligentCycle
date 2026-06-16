@@ -23,7 +23,7 @@
                 <div class="hot-stats">
                   <van-icon name="eye-o" size="12" />
                   <span>{{ question.view_count }}</span>
-                  <van-icon name="message-o" size="12" />
+                  <van-icon name="comment-o" size="12" />
                   <span>{{ question.answer_count }}</span>
                   <van-icon name="like-o" size="12" />
                   <span>{{ question.like_count }}</span>
