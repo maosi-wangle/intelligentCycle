@@ -129,10 +129,11 @@ const loadAnswers = async () => {
   loading.value = true;
   try {
     const res = await questionStore.loadAnswers(route.params.id);
-    if (res.items.length === 0) {
+    if (!res || !res.items || res.items.length === 0) {
       finished.value = true;
     } else {
-      answers.value = [...answers.value, ...res.items];
+      answers.value = res.items;
+      finished.value = true;
     }
   } catch (error) {
     console.error("加载回答失败:", error);
@@ -161,14 +162,13 @@ const handleLike = async () => {
 
 const handleCollect = async () => {
   try {
-    if (question.value.is_collected) {
-      await questionStore.toggleCollectQuestion(route.params.id, true);
-      question.value.is_collected = false;
-      question.value.collect_count--;
-    } else {
-      await questionStore.toggleCollectQuestion(route.params.id, false);
-      question.value.is_collected = true;
-      question.value.collect_count++;
+    const res = await questionStore.toggleCollectQuestion(
+      route.params.id,
+      question.value.is_collected
+    );
+    if (res) {
+      question.value.is_collected = res.collected;
+      question.value.collect_count = res.collect_count;
     }
   } catch (error) {
     console.error("收藏失败:", error);

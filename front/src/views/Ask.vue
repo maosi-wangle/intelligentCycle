@@ -68,6 +68,10 @@ const handleSubmit = async () => {
     showToast("请输入问题标题");
     return;
   }
+  if (title.value.trim().length < 4) {
+    showToast("标题至少需要4个字符");
+    return;
+  }
   if (!content.value.trim()) {
     showToast("请输入问题描述");
     return;

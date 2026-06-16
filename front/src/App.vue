@@ -5,13 +5,13 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { useUserStore } from '@/stores/user'
+import { onMounted } from "vue";
+import { useUserStore } from "@/stores/user";
 
 onMounted(() => {
-  const userStore = useUserStore()
-  userStore.fetchUser()
-})
+  const userStore = useUserStore();
+  userStore.fetchUser();
+});
 </script>
 
 <style>
@@ -22,7 +22,8 @@ onMounted(() => {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   background-color: #f5f5f5;
 }
 

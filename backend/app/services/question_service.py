@@ -97,4 +97,5 @@ def collect_question(db: Session, question_id: int, collected: bool) -> dict:
     question.is_collected = collected
     question.collect_count = question.collect_count + 1 if collected else max(0, question.collect_count - 1)
     db.commit()
-    return {'collected': collected}
+    db.refresh(question)
+    return {'collected': collected, 'collect_count': question.collect_count}

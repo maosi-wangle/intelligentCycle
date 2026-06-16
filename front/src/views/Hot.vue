@@ -21,11 +21,11 @@
               <div class="hot-content">
                 <h3 class="hot-title">{{ question.title }}</h3>
                 <div class="hot-stats">
-                  <span class="icon">👁</span>
+                  <van-icon name="eye-o" size="12" />
                   <span>{{ question.view_count }}</span>
-                  <span class="icon">💬</span>
+                  <van-icon name="message-o" size="12" />
                   <span>{{ question.answer_count }}</span>
-                  <span class="icon">👍</span>
+                  <van-icon name="like-o" size="12" />
                   <span>{{ question.like_count }}</span>
                 </div>
               </div>

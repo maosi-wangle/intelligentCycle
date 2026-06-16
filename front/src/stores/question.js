@@ -48,9 +48,11 @@ export const useQuestionStore = defineStore('question', () => {
 
   const toggleCollectQuestion = async (questionId, isCollected) => {
     if (isCollected) {
-      await uncollectQuestion(questionId)
+      const res = await uncollectQuestion(questionId)
+      return res
     } else {
-      await collectQuestion(questionId)
+      const res = await collectQuestion(questionId)
+      return res
     }
   }
 
