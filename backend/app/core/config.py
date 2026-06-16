@@ -12,9 +12,15 @@ class Settings(BaseSettings):
     jwt_expire_minutes: int = 60 * 24
     deepseek_api_key: str = ''
     deepseek_model: str = 'deepseek-v4-flash'
+    llm_api_key: str = ''
+    llm_base_url: str = 'https://api.zhipuai.cn/v4/chat/completions'
+    llm_model: str = 'glm-4-7b-flash'
     ai_memory_window: int = Field(default=8, ge=2, le=20)
     ai_persona_path: str = 'agent/persona.md'
     cors_origins: list[str] = ['http://localhost:5173', 'http://127.0.0.1:5173']
+    http_proxy: str = ''
+    https_proxy: str = ''
+    llm_mock_mode: bool = False
 
     @field_validator('cors_origins', mode='before')
     @classmethod
